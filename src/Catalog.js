@@ -1,10 +1,10 @@
 import React from 'react';
+import Basket from './Basket'
 
 const Catalog = (props) => {
   return (
     <ul className="phones">
-
-      { props.phones.map(phone => (
+      {props.phones.map(phone => (
         <li className="thumbnail" key={phone.id} >
           <a
             href={'#' + phone.id}
@@ -20,7 +20,10 @@ const Catalog = (props) => {
           </a>
 
           <div className="phones__btn-buy-wrapper">
-            <a className="btn btn-success">
+            <a
+              className="btn btn-success"
+              onClick={() => {
+              }}>
               Add
             </a>
           </div>
@@ -36,7 +39,7 @@ const Catalog = (props) => {
 
           <p>{phone.snippet}</p>
         </li>
-      )) }
+      ))}
     </ul>
   );
 };

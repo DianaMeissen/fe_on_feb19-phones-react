@@ -4,6 +4,7 @@ import { getAll, getById } from './api/phone'
 import Basket from './Basket'
 import Filter from './Filter'
 import Catalog from './Catalog'
+import Viewer from './Viewer'
 
 import './App.css';
 
@@ -16,7 +17,7 @@ class App extends React.Component {
       phones: getAll(),
       selectedPhone: null,
       basketItems: [],
-    };
+    }
   }
 
   render() {
@@ -30,7 +31,7 @@ class App extends React.Component {
             </div>
 
             <div className="col-md-10">
-              { this.state.selectedPhone ? (
+              {this.state.selectedPhone ? (
                 <Viewer
                   phone={this.state.selectedPhone}
                   onBack={() => {
@@ -40,15 +41,15 @@ class App extends React.Component {
                   }}
                 />
               ) : (
-                <Catalog
-                  phones={this.state.phones}
-                  onPhoneSelected={(phoneId) => {
-                    this.setState({
-                      selectedPhone: getById(phoneId),
-                    });
-                  }}
-                />
-              ) }
+                  <Catalog
+                    phones={this.state.phones}
+                    onPhoneSelected={(phoneId) => {
+                      this.setState({
+                        selectedPhone: getById(phoneId),
+                      });
+                    }}
+                  />
+                )}
             </div>
           </div>
         </div>
@@ -56,24 +57,5 @@ class App extends React.Component {
     );
   }
 }
-
-const Viewer = (props) => (
-  <div>
-    <img className="phone" src={props.phone.images[0]}/>
-    <button onClick={props.onBack}>Back</button>
-    <button>Add to basket</button>
-
-    <h1>{props.phone.name}</h1>
-    <p>{props.phone.description}</p>
-
-    <ul className="phone-thumbs">
-      { props.phone.images.map(imageUrl => (
-        <li>
-          <img src={imageUrl}/>
-        </li>
-      )) }
-    </ul>
-  </div>
-);
 
 export default App;
