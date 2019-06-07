@@ -1,5 +1,4 @@
 import React from 'react';
-import Basket from './Basket'
 
 class Viewer extends React.Component {
     constructor(props) {
@@ -13,10 +12,11 @@ class Viewer extends React.Component {
     render() {
         return (
             < div >
-                <img className="phone" src={this.state.selectedImg} />
+                <img className="phone" src={this.state.selectedImg} alt={this.props.phone.description} />
                 <button onClick={this.props.onBack}>Back</button>
                 <button onClick={() => {
-
+                    this.props.updateData(this.props.phone)
+                    this.props.countSameEls(this.props.phone)
                 }}>
                     Add to basket
                 </button>
@@ -29,11 +29,13 @@ class Viewer extends React.Component {
                         <li>
                             <img
                                 src={imageUrl}
+                                alt={this.props.phone.description}
                                 onClick={() => {
                                     this.setState({
                                         selectedImg: this.props.phone.images[index]
                                     })
-                                }} />
+                                }} 
+                            />
                         </li>
                     ))}
                 </ul>

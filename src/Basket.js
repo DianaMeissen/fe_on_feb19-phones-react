@@ -1,30 +1,27 @@
 import React from 'react';
 
-class Basket extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      items: [],
-    };
-  }
-
-  render() {
-    return (
-      <section>
-        <p>Shopping Cart</p>
-        <ul>
-          {this.state.items.length ? (this.state.items.map(item => {
-            <li>item.name <button>x</button></li>
-          })) : null}
-        </ul>
-      </section>
-    );
-  }
-
-  addToList() {
-    return this.state.items.add(this.props.selectedPhone);
-  }
-};
+const Basket = (props) => {
+  const array = [...props.items];
+  return (
+    <section>
+      <p>Shopping Cart</p>
+      <ul>
+        {array.length > 0 ? 
+          (array.map(item =>       
+                <li>{item.name} 
+                  {props.countSameEls(item) == 1 ? null : ('(' + props.countSameEls(item) + ')')}
+                  <button 
+                  style={{fontSize: '10px', backgroundColor: 'Transparent', border: 'none'}}
+                  onClick={()=> {
+                    props.deleteData(item);
+                  }}
+                >
+                X
+                </button></li>
+          )) : null}
+      </ul>
+    </section>
+  )
+}
 
 export default Basket;
