@@ -1,6 +1,7 @@
 import React from 'react';
+import axios from 'axios';
 
-import { getAll, getById } from './api/phone'
+import { getById } from './api/phone'
 import Basket from './Basket'
 import Filter from './Filter'
 import Catalog from './Catalog'
@@ -14,7 +15,7 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      phones: getAll(),
+      phones: [],
       selectedPhone: null,
       basketItems: [],
     }
@@ -35,6 +36,13 @@ class App extends React.Component {
     var result = 0;
     this.state.basketItems.map(item => (item === value) ? (result += 1) : null)
     return result
+  }
+
+  componentDidMount() {
+    axios.get(`https://mate-academy.github.io/phone-catalogue-static/api/phones.json`)
+    .then(res => {
+      this.setState({ phones: res.data });
+    })
   }
 
   render() {
