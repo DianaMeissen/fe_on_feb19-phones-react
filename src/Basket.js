@@ -9,7 +9,7 @@ const Basket = (props) => {
         {array.length > 0 ? 
           (array.map(item =>       
                 <li>{item.name} 
-                  {props.countSameEls(item) == 1 ? null : ('(' + props.countSameEls(item) + ')')}
+                  {props.countSameEls(item) === 1 ? null : ('(' + props.countSameEls(item) + ')')}
                   <button 
                   style={{fontSize: '10px', backgroundColor: 'Transparent', border: 'none'}}
                   onClick={()=> {

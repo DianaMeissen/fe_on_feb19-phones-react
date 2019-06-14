@@ -21,6 +21,19 @@ class App extends React.Component {
     }
   }
 
+/*  componentWillMount() {
+    localStorage.getItem('basketItems') && this.setState({
+      basketItems: localStorage.getItem('basketItems')
+    });
+  }*/
+
+  componentWillUpdate = (nextProps, nextState) => {
+    console.log(this.state.basketItems);
+    localStorage.getItem('basketItems') && localStorage.setItem('basketItems', this.state.basketItems)
+    console.log(this.state.basketItems);
+    localStorage.setItem('basketItemsDate', Date.now());
+  }
+
   updateData = (value) => {
     this.setState({
       basketItems: [...this.state.basketItems , value]})
@@ -33,7 +46,7 @@ class App extends React.Component {
   }
   
   countSameEls = (value) => {
-    var result = 0;
+    let result = 0;
     this.state.basketItems.map(item => (item === value) ? (result += 1) : null)
     return result
   }
@@ -43,9 +56,17 @@ class App extends React.Component {
     .then(res => {
       this.setState({ phones: res.data });
     })
-  }
+    
+    const date = localStorage.getItem('phones');
+    const basketItemsDate = date && new Date(parseInt(date));
+    const now = new Date();
+    const dataAge = Math.round((now - basketItemsDate) / (1000 * 60));
 
+    dataAge >= 15 && localStorage.setItem('basketItems', this.state.basketItems)
+  }
+  
   render() {
+    localStorage.setItem('basketItems', this.state.basketItems);
     return (
       <div className="App">
         <div className="container-fluid">
