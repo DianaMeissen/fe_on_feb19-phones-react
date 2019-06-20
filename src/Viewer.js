@@ -18,8 +18,7 @@ class Viewer extends React.Component {
                 <img className="phone" src={this.state.selectedImg} alt={this.props.phone.description} />
                 <button onClick={this.props.onBack}>Back</button>
                 <button onClick={() => {
-                    this.props.updateData(this.props.phone)
-                    this.props.countSameEls(this.props.phone)
+                    this.props.setBasketItems(this.props.phone)
                 }}>
                     Add to basket
                 </button>

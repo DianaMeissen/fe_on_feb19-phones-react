@@ -22,10 +22,8 @@ const Catalog = (props) => {
             <a
               className="btn btn-success"
               onClick={() => {
-                props.updateData(phone);
-                props.countSameEls(phone)
-              }}
-              >
+                props.setBasketItems(phone)
+              }}>
               Add
             </a>
           </div>

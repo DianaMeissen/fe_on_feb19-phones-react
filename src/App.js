@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-import { getById } from './api/phone'
 import Basket from './Basket'
 import Filter from './Filter'
 import Catalog from './Catalog'
@@ -21,9 +20,17 @@ class App extends React.Component {
     }
   }
 
-  updateData = (value) => {
-    this.setState({
-      basketItems: [...this.state.basketItems , value]})
+  setBasketItems = (phoneId) => {
+    let array = [...this.state.basketItems];
+    if (this.state.basketItems.phoneId === phoneId) {
+      let index = array.indexOf(array.phoneId === phoneId);
+      array[index].conut += 1;
+      this.setState({
+        basketItems: array})
+    } else {
+      this.setState({
+        basketItems: [...this.state.basketItems, {"phoneId": phoneId, "count": 1}]})
+    }
   }
 
   deleteData = (value) => {
@@ -65,15 +72,13 @@ class App extends React.Component {
               <Basket 
                 items={[...new Set(this.state.basketItems)]}
                 deleteData={this.deleteData}
-                countSameEls={this.countSameEls}
               />
             </div>
 
             <div className="col-md-10">
               {this.state.selectedPhone ? (
                 <Viewer
-                  updateData={this.updateData}
-                  countSameEls={this.countSameEls}
+                  setBasketItems={this.setBasketItems}
                   phone={this.state.selectedPhone}
                   onBack={() => {
                     this.setState({
@@ -83,8 +88,7 @@ class App extends React.Component {
                 />
               ) : (
                   <Catalog
-                    updateData={this.updateData}
-                    countSameEls={this.countSameEls}
+                    setBasketItems={this.setBasketItems}
                     phones={this.state.phones}
                     onPhoneSelected={(phoneId) => {
                         this.getPhoneById(phoneId)
