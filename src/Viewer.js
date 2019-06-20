@@ -1,15 +1,18 @@
 import React from 'react';
 
+
 class Viewer extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log('phone')
+        console.log(this.props.phone)
         this.state = {
             selectedImg: this.props.phone.images[0],
         };
     }
 
     render() {
+        
         return (
             < div >
                 <img className="phone" src={this.state.selectedImg} alt={this.props.phone.description} />

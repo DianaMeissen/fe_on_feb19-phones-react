@@ -21,19 +21,6 @@ class App extends React.Component {
     }
   }
 
-/*  componentWillMount() {
-    localStorage.getItem('basketItems') && this.setState({
-      basketItems: localStorage.getItem('basketItems')
-    });
-  }*/
-
-  componentWillUpdate = (nextProps, nextState) => {
-    console.log(this.state.basketItems);
-    localStorage.getItem('basketItems') && localStorage.setItem('basketItems', this.state.basketItems)
-    console.log(this.state.basketItems);
-    localStorage.setItem('basketItemsDate', Date.now());
-  }
-
   updateData = (value) => {
     this.setState({
       basketItems: [...this.state.basketItems , value]})
@@ -56,13 +43,15 @@ class App extends React.Component {
     .then(res => {
       this.setState({ phones: res.data });
     })
-    
-    const date = localStorage.getItem('phones');
-    const basketItemsDate = date && new Date(parseInt(date));
-    const now = new Date();
-    const dataAge = Math.round((now - basketItemsDate) / (1000 * 60));
+  }
 
-    dataAge >= 15 && localStorage.setItem('basketItems', this.state.basketItems)
+  getPhoneById = (phoneId) => {
+    return (
+      axios.get(`https://mate-academy.github.io/phone-catalogue-static/api/phones/` + phoneId + `.json`)
+      .then(res => {
+        this.setState({ selectedPhone: res.data });
+      })
+    )
   }
   
   render() {
@@ -98,9 +87,7 @@ class App extends React.Component {
                     countSameEls={this.countSameEls}
                     phones={this.state.phones}
                     onPhoneSelected={(phoneId) => {
-                      this.setState({
-                        selectedPhone: getById(phoneId),
-                      });
+                        this.getPhoneById(phoneId)
                     }}
                   />
                 )}
