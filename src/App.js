@@ -55,19 +55,6 @@ class App extends React.Component {
     this.saveToLocalSetState({ basketItems: array });
   };
 
-  componentDidMount() {
-    this.setState({
-      basketItems: JSON.parse(localStorage.getItem("basketItems"))
-    });
-    axios
-      .get(
-        `https://mate-academy.github.io/phone-catalogue-static/api/phones.json`
-      )
-      .then(res => {
-        this.setState({ phones: res.data });
-      });
-  }
-
   getPhoneById = phoneId => {
     axios
       .get(
@@ -80,6 +67,20 @@ class App extends React.Component {
       });
   };
 
+  componentDidMount() {
+    localStorage.getItem("basketItems") !== undefined &&
+      this.setState({
+        basketItems: JSON.parse(localStorage.getItem("basketItems"))
+      });
+    axios
+      .get(
+        `https://mate-academy.github.io/phone-catalogue-static/api/phones.json`
+      )
+      .then(res => {
+        this.setState({ phones: res.data });
+      });
+  }
+
   render() {
     return (
       <div className="App">
@@ -88,7 +89,7 @@ class App extends React.Component {
             <div className="col-md-2">
               <Filter />
               <Basket
-                items={[...new Set(this.state.basketItems)]}
+                items={this.state.basketItems}
                 deleteData={this.deleteData}
               />
             </div>
