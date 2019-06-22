@@ -1,109 +1,118 @@
-import React from 'react';
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
 
-import { getById } from './api/phone'
-import Basket from './Basket'
-import Filter from './Filter'
-import Catalog from './Catalog'
-import Viewer from './Viewer'
+import Basket from "./Basket";
+import Filter from "./Filter";
+import Catalog from "./Catalog";
+import Viewer from "./Viewer";
 
-import './App.css';
-
+import "./App.css";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  state = {
+    phones: [],
+    selectedPhone: null,
+    basketItems: []
+  };
 
-    this.state = {
-      phones: [],
-      selectedPhone: null,
-      basketItems: [],
-    }
-  }
-
-/*  componentWillMount() {
-    localStorage.getItem('basketItems') && this.setState({
-      basketItems: localStorage.getItem('basketItems')
+  saveToLocalSetState = state => {
+    this.setState({ ...state }, () => {
+      localStorage.setItem(
+        "basketItems",
+        JSON.stringify(this.state.basketItems)
+      );
     });
-  }*/
+  };
 
-  componentWillUpdate = (nextProps, nextState) => {
-    console.log(this.state.basketItems);
-    localStorage.getItem('basketItems') && localStorage.setItem('basketItems', this.state.basketItems)
-    console.log(this.state.basketItems);
-    localStorage.setItem('basketItemsDate', Date.now());
-  }
+  addItemToBasket = phone => {
+    let itemsArray = [...this.state.basketItems];
+    let index = itemsArray.findIndex(item => item.id === phone.id);
+    if (index === -1) {
+      this.saveToLocalSetState({
+        basketItems: [
+          ...itemsArray,
+          { id: phone.id, name: phone.name, count: 1 }
+        ]
+      });
+    } else {
+      let item = itemsArray[index];
+      item.count++;
+      itemsArray[index] = item;
+      this.saveToLocalSetState({
+        basketItems: itemsArray
+      });
+    }
+  };
 
-  updateData = (value) => {
-    this.setState({
-      basketItems: [...this.state.basketItems , value]})
-  }
-
-  deleteData = (value) => {
-    const array=[...this.state.basketItems];
-    array.splice(array.indexOf(value), 1);
-    this.setState({basketItems: array})
-  }
-  
-  countSameEls = (value) => {
-    let result = 0;
-    this.state.basketItems.map(item => (item === value) ? (result += 1) : null)
-    return result
-  }
+  deleteData = value => {
+    let array = [...this.state.basketItems];
+    let index = array.indexOf(value);
+    if (array[index].count === 1) {
+      array.splice(array.indexOf(value), 1);
+    } else {
+      array[index].count--;
+    }
+    this.saveToLocalSetState({ basketItems: array });
+  };
 
   componentDidMount() {
-    axios.get(`https://mate-academy.github.io/phone-catalogue-static/api/phones.json`)
-    .then(res => {
-      this.setState({ phones: res.data });
-    })
-    
-    const date = localStorage.getItem('phones');
-    const basketItemsDate = date && new Date(parseInt(date));
-    const now = new Date();
-    const dataAge = Math.round((now - basketItemsDate) / (1000 * 60));
-
-    dataAge >= 15 && localStorage.setItem('basketItems', this.state.basketItems)
+    this.setState({
+      basketItems: JSON.parse(localStorage.getItem("basketItems"))
+    });
+    axios
+      .get(
+        `https://mate-academy.github.io/phone-catalogue-static/api/phones.json`
+      )
+      .then(res => {
+        this.setState({ phones: res.data });
+      });
   }
-  
+
+  getPhoneById = phoneId => {
+    axios
+      .get(
+        `https://mate-academy.github.io/phone-catalogue-static/api/phones/` +
+          phoneId +
+          `.json`
+      )
+      .then(res => {
+        this.setState({ selectedPhone: res.data });
+      });
+  };
+
   render() {
-    localStorage.setItem('basketItems', this.state.basketItems);
     return (
       <div className="App">
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-2">
               <Filter />
-              <Basket 
+              <Basket
                 items={[...new Set(this.state.basketItems)]}
                 deleteData={this.deleteData}
-                countSameEls={this.countSameEls}
               />
             </div>
 
             <div className="col-md-10">
               {this.state.selectedPhone ? (
                 <Viewer
-                  updateData={this.updateData}
-                  countSameEls={this.countSameEls}
+                  addItemToBasket={this.addItemToBasket}
                   phone={this.state.selectedPhone}
                   onBack={() => {
                     this.setState({
-                      selectedPhone: null,
+                      selectedPhone: null
                     });
                   }}
                 />
               ) : (
-                  <Catalog
-                    updateData={this.updateData}
-                    countSameEls={this.countSameEls}
-                    phones={this.state.phones}
-                    onPhoneSelected={(phoneId) => {
-                      this.setState({
-                        selectedPhone: getById(phoneId),
-                      });
-                    }}
-                  />
-                )}
+                <Catalog
+                  addItemToBasket={this.addItemToBasket}
+                  phones={this.state.phones}
+                  onPhoneSelected={phoneId => {
+                    this.getPhoneById(phoneId);
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
