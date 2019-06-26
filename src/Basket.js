@@ -1,13 +1,12 @@
 import React from "react";
 
 const Basket = props => {
-  const array = [...props.items];
   return (
     <section>
       <p>Shopping Cart</p>
       <ul>
-        {array.length > 0
-          ? array.map(item => (
+        {props.items.length > 0
+          ? props.items.map(item => (
               <li>
                 {item.name}
                 {item.count === 1 ? null : "(" + item.count + ")"}

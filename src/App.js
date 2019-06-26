@@ -35,9 +35,10 @@ class App extends React.Component {
         ]
       });
     } else {
-      let item = itemsArray[index];
-      item.count++;
-      itemsArray[index] = item;
+      itemsArray[index] = {
+        ...itemsArray[index],
+        count: itemsArray[index].count++
+      } 
       this.saveToLocalSetState({
         basketItems: itemsArray
       });
@@ -50,7 +51,10 @@ class App extends React.Component {
     if (array[index].count === 1) {
       array.splice(array.indexOf(value), 1);
     } else {
-      array[index].count--;
+      array[index] = {
+        ...array[index], 
+        count: array[index].count--
+      }
     }
     this.saveToLocalSetState({ basketItems: array });
   };
